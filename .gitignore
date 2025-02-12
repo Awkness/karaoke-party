@@ -27,4 +27,8 @@ yarn-error.log*
 .idea/
 .vscode/
 *.swp
-*.swo 
+*.swo
+
+# Glitch
+.glitch-assets
+.node-gyp 

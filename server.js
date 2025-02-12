@@ -10,16 +10,28 @@ const app = express();
 
 // Middleware
 app.use(express.json());
-app.use(express.static('public'));
 
-// Data file path
-const SONGS_FILE = 'data/songs.json';
+// Determine if we're in production (Glitch) or development
+const isProduction = process.env.PROJECT_DOMAIN || process.env.NODE_ENV === 'production';
+
+// Configure data directory based on environment
+const DATA_DIR = isProduction ? '/app/.data' : 'data';
+const SONGS_FILE = path.join(DATA_DIR, 'songs.json');
+
+// Serve static files
+if (isProduction) {
+  app.use(express.static('dist'));
+} else {
+  app.use(express.static('public'));
+}
 
 // Ensure data directory exists
 async function ensureDataDir() {
   try {
-    await fs.mkdir('data');
+    await fs.mkdir(DATA_DIR, { recursive: true });
+    console.log(`Data directory ensured at: ${DATA_DIR}`);
   } catch (err) {
+    console.error('Error creating data directory:', err);
     if (err.code !== 'EEXIST') throw err;
   }
 }
@@ -28,7 +40,9 @@ async function ensureDataDir() {
 async function initSongsFile() {
   try {
     await fs.access(SONGS_FILE);
+    console.log('Songs file exists');
   } catch {
+    console.log('Creating new songs file');
     await fs.writeFile(SONGS_FILE, JSON.stringify([]));
   }
 }
@@ -121,11 +135,16 @@ app.delete('/api/songs/:id', async (req, res) => {
 
 // Serve the main page for all routes
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  if (isProduction) {
+    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+  } else {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  }
 });
 
 // Start server
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
+  console.log(`Environment: ${isProduction ? 'Production (Glitch)' : 'Development'}`);
 }); 
