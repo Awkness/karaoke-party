@@ -6,19 +6,16 @@ const app = express();
 
 // Middleware
 app.use(express.json());
+app.use(express.static('public'));
 
-// Serve static files from dist
-app.use(express.static('dist'));
-
-// In Vercel, we'll use the /tmp directory for temporary storage
-const DATA_DIR = process.env.VERCEL ? '/tmp' : '.data';
+// Data storage setup
+const DATA_DIR = '.data';
 const SONGS_FILE = path.join(DATA_DIR, 'songs.json');
 
 // Ensure data directory exists
 async function ensureDataDir() {
   try {
     await fs.mkdir(DATA_DIR, { recursive: true });
-    console.log(`Data directory created at: ${DATA_DIR}`);
   } catch (err) {
     if (err.code !== 'EEXIST') {
       console.error('Error creating data directory:', err);
@@ -31,9 +28,7 @@ async function ensureDataDir() {
 async function initSongsFile() {
   try {
     await fs.access(SONGS_FILE);
-    console.log('Songs file exists');
   } catch {
-    console.log('Creating new songs file');
     await fs.writeFile(SONGS_FILE, JSON.stringify([]));
   }
 }
@@ -122,20 +117,8 @@ app.delete('/api/songs/:id', async (req, res) => {
   }
 });
 
-// Serve the main page for all routes
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
-});
-
-// Start server if not running in Vercel
-if (!process.env.VERCEL) {
-  const port = process.env.PORT || 3000;
-  app.listen(port, '0.0.0.0', () => {
-    console.log(`Server running on port ${port}`);
-    console.log(`Access locally via: http://localhost:${port}`);
-    console.log(`Access on network via: http://<your-ip-address>:${port}`);
-  });
-}
-
-// Export the Express API for Vercel
-module.exports = app; 
+// Start server
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+}); 

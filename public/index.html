@@ -4,16 +4,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Karaoke Party</title>
-    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .song-list {
+            margin-top: 20px;
+        }
+        .song-item {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input {
+            margin: 5px 0;
+            padding: 5px;
+        }
+    </style>
 </head>
 <body>
-    <div id="root"></div>
-    <script type="text/babel" src="/KaraokeUI.jsx"></script>
-    <script type="text/babel">
-        ReactDOM.render(<KaraokeUI />, document.getElementById('root'));
+    <h1>Karaoke Party</h1>
+    
+    <form id="songForm">
+        <input type="text" id="code" placeholder="Song Code" required><br>
+        <input type="text" id="name" placeholder="Song Name" required><br>
+        <input type="text" id="singer" placeholder="Singer Name" required><br>
+        <button type="submit">Add Song</button>
+    </form>
+
+    <div id="songList" class="song-list"></div>
+
+    <script>
+        // Fetch and display songs
+        async function fetchSongs() {
+            const response = await fetch('/api/songs');
+            const songs = await response.json();
+            const songList = document.getElementById('songList');
+            songList.innerHTML = songs.map(song => `
+                <div class="song-item">
+                    <strong>${song.name}</strong> (${song.code})<br>
+                    Singer: ${song.singer}
+                    <button onclick="deleteSong('${song.id}')">Delete</button>
+                </div>
+            `).join('');
+        }
+
+        // Add new song
+        document.getElementById('songForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const song = {
+                code: document.getElementById('code').value,
+                name: document.getElementById('name').value,
+                singer: document.getElementById('singer').value
+            };
+            await fetch('/api/songs', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(song)
+            });
+            e.target.reset();
+            fetchSongs();
+        };
+
+        // Delete song
+        async function deleteSong(id) {
+            await fetch(`/api/songs/${id}`, { method: 'DELETE' });
+            fetchSongs();
+        }
+
+        // Initial load
+        fetchSongs();
+        // Refresh every 30 seconds
+        setInterval(fetchSongs, 30000);
     </script>
 </body>
 </html> 
