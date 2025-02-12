@@ -11,28 +11,23 @@ const app = express();
 // Middleware
 app.use(express.json());
 
-// Determine if we're in production (Glitch) or development
-const isProduction = process.env.PROJECT_DOMAIN || process.env.NODE_ENV === 'production';
+// Serve static files from dist
+app.use(express.static('dist'));
 
-// Configure data directory based on environment
-const DATA_DIR = isProduction ? '/app/.data' : 'data';
+// Data file path - using .data directory in Glitch
+const DATA_DIR = '.data';
 const SONGS_FILE = path.join(DATA_DIR, 'songs.json');
-
-// Serve static files
-if (isProduction) {
-  app.use(express.static('dist'));
-} else {
-  app.use(express.static('public'));
-}
 
 // Ensure data directory exists
 async function ensureDataDir() {
   try {
     await fs.mkdir(DATA_DIR, { recursive: true });
-    console.log(`Data directory ensured at: ${DATA_DIR}`);
+    console.log(`Data directory created at: ${DATA_DIR}`);
   } catch (err) {
-    console.error('Error creating data directory:', err);
-    if (err.code !== 'EEXIST') throw err;
+    if (err.code !== 'EEXIST') {
+      console.error('Error creating data directory:', err);
+      throw err;
+    }
   }
 }
 
@@ -86,7 +81,6 @@ setInterval(async () => {
 app.get('/api/songs', async (req, res) => {
   try {
     const songs = await readSongs();
-    // Sort songs by timestamp in ascending order (oldest first)
     songs.sort((a, b) => b.timestamp - a.timestamp);
     res.json(songs);
   } catch (err) {
@@ -102,7 +96,6 @@ app.post('/api/songs', async (req, res) => {
     }
     
     const songs = await readSongs();
-    // Sort songs by position to find the highest number
     const maxPosition = songs.reduce((max, song) => Math.max(max, song.position || 0), 0);
     
     const newSong = {
@@ -111,7 +104,7 @@ app.post('/api/songs', async (req, res) => {
       name,
       singer,
       timestamp: Date.now(),
-      position: maxPosition + 1  // Add to the end of the list
+      position: maxPosition + 1
     };
     
     songs.push(newSong);
@@ -135,16 +128,11 @@ app.delete('/api/songs/:id', async (req, res) => {
 
 // Serve the main page for all routes
 app.get('*', (req, res) => {
-  if (isProduction) {
-    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
-  } else {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-  }
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
 // Start server
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-  console.log(`Environment: ${isProduction ? 'Production (Glitch)' : 'Development'}`);
+  console.log(`Server running on port ${port}`);
 }); 
