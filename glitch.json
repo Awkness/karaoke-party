@@ -1,6 +1,6 @@
 {
   "install": "npm install",
-  "start": "npm start",
+  "start": "node server.js",
   "watch": {
     "ignore": [
       "\\.git",
@@ -20,6 +20,7 @@
         "\\.html",
         "\\.css"
       ]
-    }
+    },
+    "throttle": 1000
   }
 } 
