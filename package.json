@@ -2,6 +2,7 @@
   "name": "karaoke-party",
   "version": "1.0.0",
   "description": "A real-time karaoke party song list manager",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
@@ -9,7 +10,7 @@
     "express": "^4.18.2"
   },
   "engines": {
-    "node": "16.x"
+    "node": "12.x"
   },
   "license": "MIT"
 }
