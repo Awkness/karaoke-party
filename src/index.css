@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600&family=Inter:wght@400;500&display=swap');
+
+:root {
+  --color-primary: #1a1a1a;
+  --color-secondary: #f0f0f0;
+  --color-accent: #666666;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  min-height: 100vh;
+}
+
+.title-font {
+  font-family: 'Crimson Pro', serif;
+}
+
+.body-font {
+  font-family: 'Inter', sans-serif;
+}
+
+.custom-input::placeholder {
+  opacity: 0.8;
+} 

@@ -1,0 +1,139 @@
+---
+description: 
+globs: 
+---
+# Karaoke Party List Manager - Project Overview
+
+## Core Features
+1. Real-time List Management
+   - Add new songs to the bottom of the list
+   - View current song queue
+   - Administrative deletion of songs
+   - Automatic deletion of first song every 6 minutes
+
+2. User Interface Sections
+   - Add Song Section (Public)
+   - View List Section (Public)
+   - Edit List Section (Password Protected)
+
+## Technical Components
+
+### Frontend
+1. **HTML Structure**
+   - Mobile-first responsive design
+   - Three main section views
+   - Form validation
+   - Password protection modal
+   - Real-time updates
+
+2. **Styling Specifications**
+   - Layout Structure:
+     * Main content area centered at top of viewport
+     * Navigation buttons fixed at bottom
+     * Three equal-width section titles ("ADD | SEE | EDIT")
+   
+   - Typography:
+     * Serif font family throughout
+     * Clean, readable text hierarchy
+   
+   - Color System:
+     * Randomly generated per user
+     * Two-tone palette within same hue
+     * Muted, modern color variations
+     * Light/Dark pairs (e.g., light blue text on dark blue background or vice versa)
+     * Colors persist per session
+   
+   - UI Elements:
+     * Square buttons with refined styling
+     * Sharp corners on all interactive elements
+     * Consistent padding and spacing
+     * Clean form input styling
+     * Mobile-optimized touch targets
+   
+   - Responsive Design:
+     * Mobile-first approach
+     * Single column layout
+     * Bottom-fixed navigation
+     * Comfortable reading width
+     * Touch-friendly input fields
+
+3. **JavaScript Functionality**
+   - Section navigation
+   - Form handling
+   - Real-time list updates
+   - Color scheme generation
+   - Password verification
+   - Automatic song removal timer
+   - Local storage management
+
+### Backend (Glitch)
+1. **Server**
+   - Express.js server setup
+   - Static file serving
+   - API endpoints for CRUD operations
+
+2. **Database**
+   - JSON file storage for song list
+   - Persistent data storage
+   - Concurrent access handling
+
+## Data Structures
+
+### Song Entry
+```javascript
+{
+  id: string,          // Unique identifier
+  code: string,        // Song code/number
+  name: string,        // Song name
+  singer: string,      // Singer's name
+  timestamp: number    // Addition time
+}
+```
+
+## API Endpoints
+- GET /songs - Retrieve full song list
+- POST /songs - Add new song
+- DELETE /songs/:id - Remove specific song
+- POST /auth - Verify admin password
+
+## Security Considerations
+- Simple password protection for admin features
+- Rate limiting for API endpoints
+- Input sanitization
+- Cross-Origin Resource Sharing (CORS) setup
+
+## Implementation Phases
+
+### Phase 1: Basic Setup
+- Server setup on Glitch
+- Basic HTML structure
+- Core styling implementation
+- Color scheme generator
+
+### Phase 2: Core Functionality
+- Song list management
+- View implementation
+- Real-time updates
+- Basic storage system
+
+### Phase 3: Advanced Features
+- Admin authentication
+- Automatic deletion timer
+- Mobile optimization
+- Error handling
+
+### Phase 4: Polish
+- UI refinements
+- Performance optimization
+- Testing
+- Documentation
+
+## Testing Checklist
+- Mobile responsiveness
+- Color scheme generation
+- Form validation
+- Real-time updates
+- Auto-deletion functionality
+- Password protection
+- Concurrent user access
+- Error handling
