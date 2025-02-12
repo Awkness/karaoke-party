@@ -129,6 +129,8 @@ app.get('*', (req, res) => {
 
 // Start server
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
   console.log(`Server running on port ${port}`);
+  console.log(`Access locally via: http://localhost:${port}`);
+  console.log(`Access on network via: http://<your-ip-address>:${port}`);
 }); 

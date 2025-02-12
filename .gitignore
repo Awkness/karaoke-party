@@ -31,4 +31,11 @@ yarn-error.log*
 
 # Glitch
 .glitch-assets
-.node-gyp 
+.node-gyp
+
+# Additional exclusions
+.env
+.data/
+dist/
+*.log
+.vscode/ 
