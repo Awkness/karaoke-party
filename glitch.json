@@ -1,26 +1,7 @@
 {
   "install": "npm install",
-  "start": "node server.js",
+  "start": "npm start",
   "watch": {
-    "ignore": [
-      "\\.git",
-      "node_modules/**/node_modules",
-      "data/*"
-    ],
-    "install": {
-      "include": [
-        "^package\\.json$",
-        "^\\.env$"
-      ]
-    },
-    "restart": {
-      "include": [
-        "\\.js$",
-        "\\.json",
-        "\\.html",
-        "\\.css"
-      ]
-    },
     "throttle": 1000
   }
 } 

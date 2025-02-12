@@ -10,8 +10,8 @@ app.use(express.json());
 // Serve static files from dist
 app.use(express.static('dist'));
 
-// Data file path - using .data directory in Glitch
-const DATA_DIR = '.data';
+// In Vercel, we'll use the /tmp directory for temporary storage
+const DATA_DIR = process.env.VERCEL ? '/tmp' : '.data';
 const SONGS_FILE = path.join(DATA_DIR, 'songs.json');
 
 // Ensure data directory exists
@@ -127,10 +127,15 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
-// Start server
-const port = process.env.PORT || 3000;
-app.listen(port, '0.0.0.0', () => {
-  console.log(`Server running on port ${port}`);
-  console.log(`Access locally via: http://localhost:${port}`);
-  console.log(`Access on network via: http://<your-ip-address>:${port}`);
-}); 
+// Start server if not running in Vercel
+if (!process.env.VERCEL) {
+  const port = process.env.PORT || 3000;
+  app.listen(port, '0.0.0.0', () => {
+    console.log(`Server running on port ${port}`);
+    console.log(`Access locally via: http://localhost:${port}`);
+    console.log(`Access on network via: http://<your-ip-address>:${port}`);
+  });
+}
+
+// Export the Express API for Vercel
+module.exports = app; 

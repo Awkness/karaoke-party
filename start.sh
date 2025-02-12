@@ -1,2 +1,5 @@
-#!/bin/bash
-node server.js 
+#!/bin/sh
+# Install dependencies
+npm install
+# Start the server
+npm start 
